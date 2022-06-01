@@ -8,6 +8,9 @@ export default function CorsMiddleware(whiteListedUrls) {
       allowedHeaders: ['Content-Type', 'Authorization']
     })
 
+    const origin = req.get('Origin')
+
+    console.log(`[CorsMiddleware] Receive request from ${origin} ${whiteListedUrls.includes(origin)}`);
     if (req.method != "OPTIONS") {
       next()
       return
