@@ -1,22 +1,22 @@
 import express from "express"
-import * as dotenv from "dotenv"
 import CorsMiddleware from "./middleware/CorsMiddleware.js"
 import PingRouter from "./service/ping/controller.js"
+import GetDatabaseConn from "./util/Database.js"
+import GetEnvValue from "./util/GetEnvironment.js"
 
-dotenv.config()
 const app = express()
+const EnvValue = GetEnvValue()
 
-const SERVER_PORT = process.env.SERVER_PORT
-const WHITELISTED_URL = process.env.WHITELISTED_URL.split(',')
+const db = GetDatabaseConn(EnvValue)
 
-app.use(CorsMiddleware(WHITELISTED_URL))
+app.use(CorsMiddleware(EnvValue.WHITELISTED_URLS))
 app.use(express.json())
-app.options('*', CorsMiddleware(WHITELISTED_URL))
+app.options('*', CorsMiddleware(EnvValue.WHITELISTED_URLS))
 
 app.use('/ping', PingRouter)
 
-app.listen(SERVER_PORT, () => {
-  console.log(`[INFO] Server start on port ${SERVER_PORT}`);
+app.listen(EnvValue.SERVER_PORT, () => {
+  console.log(`[INFO] Server start on port ${EnvValue.SERVER_PORT}`);
 })
 
 export default app
